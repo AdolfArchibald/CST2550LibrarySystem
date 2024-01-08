@@ -15,7 +15,7 @@ class Book {
         std::string authorLastName;
         std::string bookType;
         Date dueDate;
-        Member borrower;
+        Member borrower{0, "", "" , ""};
     
     public:
         Book(int bookID, std::string bookName, std::string authorFirstName, std::string authorLastName);
@@ -29,7 +29,7 @@ class Book {
 
         void setDueDate(Date dueDate);
         void returnBook();
-        void borrowBook(Member Borrower, Date dueDate);
+        void borrowBook(Member borrower, Date dueDate);
 };
 
 #endif
