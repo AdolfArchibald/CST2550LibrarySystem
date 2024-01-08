@@ -73,6 +73,7 @@ Librarian::Librarian(int staffId, std::string name, std::string address, std::st
 
 void Librarian::addMember()
 {   
+    // Set up variables for all the details to be entered.
     int idOfMember;
     std::string memberName, memberAddress, memberEmail;
 
@@ -88,6 +89,7 @@ void Librarian::addMember()
     std::cout << "Please enter the member email: " << std::endl;
     std::cin >> memberEmail;
 
+    // After getting all the details, push the new member to the members vector.
     members.push_back(Member(idOfMember, memberName, memberAddress, memberEmail));
 }
 

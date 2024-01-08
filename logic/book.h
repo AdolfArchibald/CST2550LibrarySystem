@@ -4,6 +4,7 @@
 #include <string>
 #include <ctime>
 #include "person.h"
+#include "date.h"
 
 class Book {
 
@@ -13,7 +14,7 @@ class Book {
         std::string authorFirstName;
         std::string authorLastName;
         std::string bookType;
-        std::time_t dueDate;
+        Date dueDate;
         Member borrower;
     
     public:
@@ -24,11 +25,11 @@ class Book {
         std::string getAuthorFirstName();
         std::string getAuthorLastName();
 
-        std::time_t getDueDate();
+        Date getDueDate();
 
-        void setDueDate(std::time_t dueDate);
+        void setDueDate(Date dueDate);
         void returnBook();
-        void borrowBook(Member Borrower, std::time_t dueDate);
+        void borrowBook(Member Borrower, Date dueDate);
 };
 
 #endif
