@@ -34,10 +34,10 @@ class Member : public Person {
     public:
         Member(int memberId, std::string name, std::string address, std::string email);
 
-        std::string getMember();
+        std::string getMemberID();
         std::vector<Book> getBooksBorrowed();
-        
-        void setBooksBorrowed(const Book& book);
+
+        void setBooksBorrowed(Book book);
 };
 
 class Librarian : public Person {
@@ -45,9 +45,10 @@ class Librarian : public Person {
     private:
         int staffId;
         int salary;
+        std::vector<Member> members;
 
     public:
-        Librarian(int staffId, std::string name, std::string address, std::string email, std::string salary);
+        Librarian(int staffId, std::string name, std::string address, std::string email, int salary);
 
         void addMember();
         void issueBook(int memberID, int bookID);
