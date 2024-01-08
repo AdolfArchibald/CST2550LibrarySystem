@@ -128,6 +128,14 @@ void Librarian::issueBook(int memberID, int bookID)
                     std::getline(ss, authorLast, ',');
                     std::getline(ss, bookType, ',');
                     
+                    // Instantiate the book using the information.
+                    Book borrowedBook = Book(std::stoi(bookId), bookName, authorFirst, authorLast);
+
+                    Date date;
+                    std::tm currentDate = date.getCurrentDateAndTime();
+                    int threeDays = 3 * 24 * 60 * 60;
+
+                    borrowedBook.setDueDate();
                     element.setBooksBorrowed(Book(std::stoi(bookId), bookName, authorFirst, authorLast));
 
                     // Close the file after successfully getting the book information.
@@ -147,6 +155,27 @@ void Librarian::returnBook(int memberID, int bookID)
         // Note the memberID is converted from a string to int as the getMemberID method has to return a string.
         if (std::stoi(element.getMemberID()) == memberID) {
             
+            // Loop through the user books and look for the matching book ID.
+            // Return the book if there is a match and check if a fine needs to be added.
+            // TODO: LEt the librarian know if the book ID isn't borrowed.
+            for (auto& userBook : element.getBooksBorrowed()) {
+                if (userBook.getBookID() == std::to_string(bookID)) {
+                    userBook.returnBook();
+                }
+            }
+        }
+    }
+}
+
+void Librarian::calcFine(int memberID)
+{
+    Date date;
+    std::tm currentDate = date.getCurrentDateAndTime();
+
+    for (auto& element : members) {
+        
+        for (auto& book :element.getBooksBorrowed()) {
+            if (date.calcTimeDiff(book.getDueDate(), date.getInstantiationTime()))
         }
     }
 }

@@ -41,7 +41,6 @@ void Book::setDueDate(Date dueDate)
     this->dueDate = dueDate;
 }
 
-// TODO: Sort this out.
 void Book::returnBook()
 {
     this->borrower = Member(0, "", "", "");
