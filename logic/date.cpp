@@ -1,31 +1,24 @@
 #include "date.h"
 
-Date::Date()
+Date::Date(std::time_t offset)
+{
+    // Set the time to monitor based on the epoch and offset.
+    this->timeToMonitor = std::time(0) + offset;
+}
+
+std::time_t Date::getTimeToMonitor()
+{
+    return timeToMonitor;
+}
+
+std::time_t Date::getCurrentDateAndTime()
 {
     // Get the time since the epoch.
-    time_t now = std::time(0);
-    // Convert the time to a readable format.
-    this->instantiatedTime = *std::localtime(&now);
+    std::time_t now = std::time(0);
+    return now;
 }
 
-std::tm Date::getInstantiationTime()
-{
-    return instantiatedTime;
-}
-
-std::tm Date::getCurrentDateAndTime()
-{
-    // Get the time since the epoch.
-    time_t now = std::time(0);
-    // Convert the time to a readable format and return it.
-    return *std::localtime(&now);
-}
-
-double Date::calcTimeDiff(std::tm newTime, std::tm oldTime)
+double Date::calcTimeDiff(time_t newTime, time_t oldTime)
 {   
-    // Cast the given times into time_t to calculate the difference.
-    std::time_t newTimeT = std::mktime(&newTime);
-    std::time_t oldTimeT = std::mktime(&oldTime);
-
-    return std::difftime(newTimeT, oldTimeT);
+    return std::difftime(newTime, oldTime);
 }

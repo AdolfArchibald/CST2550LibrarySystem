@@ -131,11 +131,12 @@ void Librarian::issueBook(int memberID, int bookID)
                     // Instantiate the book using the information.
                     Book borrowedBook = Book(std::stoi(bookId), bookName, authorFirst, authorLast);
 
-                    Date date;
-                    std::tm currentDate = date.getCurrentDateAndTime();
+                    // Set up the three days to add to the current date for the due date.
                     int threeDays = 3 * 24 * 60 * 60;
+                    Date date = Date(threeDays);
 
-                    borrowedBook.setDueDate();
+                    // Set the due date and add the book to the member's book list.
+                    borrowedBook.setDueDate(date);
                     element.setBooksBorrowed(Book(std::stoi(bookId), bookName, authorFirst, authorLast));
 
                     // Close the file after successfully getting the book information.
@@ -160,7 +161,17 @@ void Librarian::returnBook(int memberID, int bookID)
             // TODO: LEt the librarian know if the book ID isn't borrowed.
             for (auto& userBook : element.getBooksBorrowed()) {
                 if (userBook.getBookID() == std::to_string(bookID)) {
-                    userBook.returnBook();
+                    
+                    // Calculate how long it took for the book to be returned.
+                    Date date = Date(0);
+                    double timeDiff = date.calcTimeDiff(userBook.getDueDate().getTimeToMonitor(), date.getCurrentDateAndTime());
+                    int threeDays = 3 * 24 * 60 * 60;
+
+                    // If the time difference between lending and currentDate > 3, calculate a fine for the member.
+                    // TODO fix this.
+                    if (timeDiff > threeDays)  {
+                        calcFine(std::stoi(element.getMemberID()));
+                    }
                 }
             }
         }
@@ -169,13 +180,17 @@ void Librarian::returnBook(int memberID, int bookID)
 
 void Librarian::calcFine(int memberID)
 {
-    Date date;
-    std::tm currentDate = date.getCurrentDateAndTime();
-
-    for (auto& element : members) {
-        
-        for (auto& book :element.getBooksBorrowed()) {
-            if (date.calcTimeDiff(book.getDueDate(), date.getInstantiationTime()))
-        }
+    int fine = 0;
+    while (timeDiff > 0) {
+    // Add to the fine and subtract one day (in seconds) per iteration.
+    fine += 1;
+    timeDiff -= 24 * 60 * 60;
+    }
+    // Provide user feedback.
+    if (fine > 0) {
+        std::cout << "The member owes fines amounting to: " << std::to_string(fine) << std::endl;
+    }
+    else {
+        std::cout << "The member owes no fines." << std::endl;
     }
 }
