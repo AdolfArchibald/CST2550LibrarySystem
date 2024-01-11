@@ -1,24 +1,32 @@
 #include "date.h"
 
-Date::Date(std::time_t offset)
+Date::Date(int day, int month, int year)
 {
-    // Set the time to monitor based on the epoch and offset.
-    this->timeToMonitor = std::time(0) + offset;
+    this->day = day;
+    this->month = month;
+    this->year = year;
 }
 
-std::time_t Date::getTimeToMonitor()
+int Date::getDay()
 {
-    return timeToMonitor;
+    return day;
 }
 
-std::time_t Date::getCurrentDateAndTime()
+int Date::getMonth()
 {
-    // Get the time since the epoch.
-    std::time_t now = std::time(0);
-    return now;
+    return month;
 }
 
-double Date::calcTimeDiff(time_t newTime, time_t oldTime)
-{   
-    return std::difftime(newTime, oldTime);
+int Date::getYear()
+{
+    return year;
+}
+
+int getDiffInDates(Date oldDate, Date newDate)
+{
+    int diffInYears = newDate.getYear() - oldDate.getYear();
+    int diffInMonths = newDate.getMonth() - oldDate.getMonth();
+    int diffInDays = newDate.getDay() - oldDate.getDay();
+
+    return (diffInYears * 365) + (diffInMonths * 30) + diffInDays;
 }
