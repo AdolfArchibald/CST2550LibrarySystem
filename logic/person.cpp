@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include "person.h"
+#include "date.h"
 
 Person::Person(std::string name, std::string address, std::string email)
 {
@@ -131,12 +132,24 @@ void Librarian::issueBook(int memberID, int bookID)
                     // Instantiate the book using the information.
                     Book borrowedBook = Book(std::stoi(bookId), bookName, authorFirst, authorLast);
 
-                    // Set up the three days to add to the current date for the due date.
-                    int threeDays = 3 * 24 * 60 * 60;
-                    Date date = Date(threeDays);
+                    // Ask the librarian to enter the due date for the book.
+                    int day, month, year;
+                    std::cout << "Enter the requested information in number form eg. 2023 07 16" << std::endl;
+
+                    std::cout << "Enter the year the book has to be returned: ";
+                    std::cin >> year;
+                    std::cout << "\n";
+
+                    std::cout << "Enter the month the book has to be returned: ";
+                    std::cin >> month;
+                    std::cout << "\n";
+
+                    std::cout << "Enter the day the book has to be returned: ";
+                    std::cin >> day;
+                    std::cout << "\n";
 
                     // Set the due date and add the book to the member's book list.
-                    borrowedBook.setDueDate(date);
+                    borrowedBook.setDueDate(Date(day, month, year));
                     element.setBooksBorrowed(Book(std::stoi(bookId), bookName, authorFirst, authorLast));
 
                     // Close the file after successfully getting the book information.
@@ -163,13 +176,30 @@ void Librarian::returnBook(int memberID, int bookID)
                 if (userBook.getBookID() == std::to_string(bookID)) {
                     
                     // Calculate how long it took for the book to be returned.
-                    Date date = Date(0);
-                    double timeDiff = date.calcTimeDiff(userBook.getDueDate().getTimeToMonitor(), date.getCurrentDateAndTime());
-                    int threeDays = 3 * 24 * 60 * 60;
+                    // Ask the librarian for the current date before proceeding.
+                    int day, month, year;
+                    std::cout << "Enter the requested information in number form eg. 2023 07 16" << std::endl;
+
+                    std::cout << "Enter the current year: ";
+                    std::cin >> year;
+                    std::cout << "\n";
+
+                    std::cout << "Enter the current month: ";
+                    std::cin >> month;
+                    std::cout << "\n";
+
+                    std::cout << "Enter the current day: ";
+                    std::cin >> day;
+                    std::cout << "\n";
+                    
+                    int diff = getDiffInDates(Date(day, month, year), userBook.getDueDate());
 
                     // If the time difference between lending and currentDate > 3, calculate a fine for the member.
                     // TODO fix this.
-                    if (timeDiff > threeDays)  {
+                    if (diff < 0) {
+                        diff *= -1;
+                        int fine = 1;
+
                         calcFine(std::stoi(element.getMemberID()));
                     }
                 }
@@ -178,19 +208,23 @@ void Librarian::returnBook(int memberID, int bookID)
     }
 }
 
+// TODO: Fix this.
 void Librarian::calcFine(int memberID)
 {
-    int fine = 0;
-    while (timeDiff > 0) {
-    // Add to the fine and subtract one day (in seconds) per iteration.
-    fine += 1;
-    timeDiff -= 24 * 60 * 60;
-    }
-    // Provide user feedback.
-    if (fine > 0) {
-        std::cout << "The member owes fines amounting to: " << std::to_string(fine) << std::endl;
-    }
-    else {
-        std::cout << "The member owes no fines." << std::endl;
+    
+}
+
+void Librarian::displayBorrowedBooks(int memberID)
+{
+    for(auto& member : members) {
+        if (std::stoi(member.getMemberID()) == memberID) {
+            std::cout << "The member's borrowed books are:" << std::endl;
+            int number = 1;
+
+            for (auto& book : member.getBooksBorrowed()) {
+                std::cout << std::to_string(number) << ".) " << "ID: " << book.getBookID() << "    Name: " << book.getBookName() << std::endl;
+                number += 1;
+            }
+        }
     }
 }

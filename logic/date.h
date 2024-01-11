@@ -1,21 +1,20 @@
 #ifndef _DATE_H_
 #define _DATE_H_
 
-#include <ctime>
-
 class Date {
     private:
-        std::time_t timeToMonitor;
+        int day;
+        int month;
+        int year;
 
     public:
-        Date::Date(std::time_t offset = 0);
+        Date(int day, int month, int year);
 
-        std::time_t getTimeToMonitor();
-        std::time_t getCurrentDateAndTime();
-
-        // void addDays(std::time_t currentDay, int days);
-
-        double calcTimeDiff(std::time_t newTime, std::time_t oldTime);
+        int getDay();
+        int getMonth();
+        int getYear();
 };
+
+int getDiffInDates(Date oldDate, Date  newDate);
 
 #endif
