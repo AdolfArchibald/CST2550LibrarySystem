@@ -74,24 +74,28 @@ Librarian::Librarian(int staffId, std::string name, std::string address, std::st
 
 void Librarian::addMember()
 {   
-    // Set up variables for all the details to be entered.
-    int idOfMember;
-    std::string memberName, memberAddress, memberEmail;
+    std::string memberID, memberName, memberEmail, memberAddress;
 
-    std::cout << "Please enter the member ID: " << std::endl;
-    std::cin >> idOfMember;
+    std::cout << "Please enter the member details below:" << std::endl;
 
-    std::cout << "Please enter the member name: " << std::endl;
+    std::cout << "Member ID: ";
+    std::cin >> memberID;
+    std::cout << "\n";
+
+    std::cout << "Member Name: ";
     std::cin >> memberName;
+    std::cout << "\n";
 
-    std::cout << "Please enter the member Address: " << std::endl;
-    std::cin >> memberAddress;
-
-    std::cout << "Please enter the member email: " << std::endl;
+    std::cout << "Member Email: ";
     std::cin >> memberEmail;
+    std::cout << "\n";
+
+    std::cout << "Member Address: ";
+    std::cin >> memberAddress;
+    std::cout << "\n";
 
     // After getting all the details, push the new member to the members vector.
-    members.push_back(Member(idOfMember, memberName, memberAddress, memberEmail));
+    members.push_back(Member(std::stoi(memberID), memberName, memberAddress, memberEmail));
 }
 
 // TODO: Inform the librarian that their member and book ID is valid or invalid.
@@ -163,18 +167,35 @@ void Librarian::issueBook(int memberID, int bookID)
 void Librarian::returnBook(int memberID, int bookID)
 {
     // Loop through all the members in the members array.
-    for (auto& element : members) {
+    for (auto& member : members) {
 
         // Identify the member that wants to return a book using their ID.
         // Note the memberID is converted from a string to int as the getMemberID method has to return a string.
-        if (std::stoi(element.getMemberID()) == memberID) {
+        if (std::stoi(member.getMemberID()) == memberID) {
             
             // Loop through the user books and look for the matching book ID.
             // Return the book if there is a match and check if a fine needs to be added.
             // TODO: LEt the librarian know if the book ID isn't borrowed.
-            for (auto& userBook : element.getBooksBorrowed()) {
+            for (auto& userBook : member.getBooksBorrowed()) {
                 if (userBook.getBookID() == std::to_string(bookID)) {
-                    
+                    calcFine(std::stoi(member.getMemberID()), std::stoi(userBook.getBookID()));
+                    // TODO: Remove the book from member.
+                    std::cout << "Successfully returned the book: " << userBook.getBookName() << std::endl;
+                }
+            }
+        }
+    } 
+}
+
+// Added a parameter to this method to be able to calculate the fine.
+void Librarian::calcFine(int memberID, int bookID)
+{
+    // Identify the book in the member's borrowed books.
+    for (auto& member : members) {
+        if (member.getMemberID() == std::to_string(memberID)) {
+            for (auto& book : member.getBooksBorrowed()) {
+                if (book.getBookID() == std::to_string(bookID)) {
+
                     // Calculate how long it took for the book to be returned.
                     // Ask the librarian for the current date before proceeding.
                     int day, month, year;
@@ -192,26 +213,24 @@ void Librarian::returnBook(int memberID, int bookID)
                     std::cin >> day;
                     std::cout << "\n";
                     
-                    int diff = getDiffInDates(Date(day, month, year), userBook.getDueDate());
+                    int diff = getDiffInDates(Date(day, month, year), book.getDueDate());
 
-                    // If the time difference between lending and currentDate > 3, calculate a fine for the member.
-                    // TODO fix this.
+                    // Issue a fine using the fine aount 
                     if (diff < 0) {
                         diff *= -1;
-                        int fine = 1;
+                        int dailyFineAmount = 1;
+                        int totalFine = dailyFineAmount * diff;
 
-                        calcFine(std::stoi(element.getMemberID()));
+                        std::cout << "The books was " << std::to_string(diff) << " days late." << std::endl;
+                        std::cout << "The member has to pay a fine amounting to: £" << std::to_string(totalFine) << ".00" << std::endl;
+                    }
+                    else {
+                        std::cout << "The member returned the book within the given period." << std::endl;
                     }
                 }
             }
         }
     }
-}
-
-// TODO: Fix this.
-void Librarian::calcFine(int memberID)
-{
-    
 }
 
 void Librarian::displayBorrowedBooks(int memberID)
@@ -227,4 +246,24 @@ void Librarian::displayBorrowedBooks(int memberID)
             }
         }
     }
+}
+
+int Librarian::getstaffID()
+{
+    return staffId;
+}
+
+int Librarian::getSalary()
+{
+    return salary;
+}
+
+void Librarian::setStaffID(int staffID)
+{
+    this->staffId = staffID;
+}
+
+void Librarian::setSalary(int salary)
+{
+    this->salary = salary;
 }

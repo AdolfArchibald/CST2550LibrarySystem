@@ -14,7 +14,7 @@ class Book {
         std::string authorFirstName;
         std::string authorLastName;
         std::string bookType;
-        Date dueDate;
+        Date dueDate{0, 0, 0};
         Member borrower{0, "", "" , ""};
     
     public:
