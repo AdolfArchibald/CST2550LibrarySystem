@@ -31,7 +31,7 @@ class Book {
 
         void setDueDate(Date dueDate);
         void returnBook();
-        void borrowBook(Member borrower, Date dueDate);
+        void borrowBook(Member& borrower, Date dueDate);
 };
 
 #endif

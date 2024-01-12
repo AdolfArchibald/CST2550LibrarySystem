@@ -39,7 +39,7 @@ class Member : public Person {
         std::string getMemberID();
         std::vector<Book> getBooksBorrowed();
 
-        void setBooksBorrowed(const Book& book);
+        void setBooksBorrowed(const std::vector<Book>& books);
 };
 
 class Librarian : public Person {

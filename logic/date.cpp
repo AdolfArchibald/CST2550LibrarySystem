@@ -1,4 +1,5 @@
 #include "date.h"
+#include <cmath>
 
 Date::Date(int day, int month, int year)
 {
@@ -22,9 +23,22 @@ int Date::getYear()
     return year;
 }
 
-int getDiffInDates(Date oldDate, Date newDate)
+int getDiffInDates(Date date1, Date date2)
 {
-    int totalDaysInOldDate = (365 * oldDate.getYear()) + (30 * oldDate.getMonth()) + oldDate.getDay();
-    int totalDaysInNewDate = (365 * newDate.getYear()) + (30 * newDate.getMonth()) + newDate.getDay();
-    return totalDaysInNewDate - totalDaysInOldDate;
+    // Set the number of days in each month
+    const int daysInMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+    // Convert each date to total days
+    int totalDays1 = date1.getYear() * 365 + date1.getDay();
+    for (int month = 0; month < date1.getMonth(); month++) {
+        totalDays1 += daysInMonth[month];
+    }
+
+    int totalDays2 = date2.getYear() * 365 + date2.getDay();
+    for (int month = 0; month < date2.getMonth(); month++) {
+        totalDays2 += daysInMonth[month];
+    }
+
+    // Calculate the absolute difference in days
+    return std::abs(totalDays2 - totalDays1);
 }

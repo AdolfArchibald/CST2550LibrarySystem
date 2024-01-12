@@ -47,13 +47,19 @@ void Book::returnBook()
     this->borrower = nullptr;
 }
 
-void Book::borrowBook(Member borrower, Date dueDate)
+void Book::borrowBook(Member& borrower, Date dueDate)
 {
     // Check if the book is not already borrowed
     if (this->borrower == nullptr) {
         this->borrower = &borrower;
         this->dueDate = dueDate;
-        borrower.setBooksBorrowed(*this);
+        
+        // Add the book to the user's books.
+        std::vector<Book> memberBooks = borrower.getBooksBorrowed();
+        memberBooks.push_back(*this);
+
+        borrower.setBooksBorrowed(memberBooks);
+
     } else {
         // Let the user know that the book is not currently available
         std::cout << "The book is not available as someone else currently has it.";

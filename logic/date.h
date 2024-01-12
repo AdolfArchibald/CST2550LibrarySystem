@@ -15,6 +15,6 @@ class Date {
         int getYear();
 };
 
-int getDiffInDates(Date oldDate, Date  newDate);
+int getDiffInDates(Date date1, Date date2);
 
 #endif
