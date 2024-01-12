@@ -202,12 +202,15 @@ void Librarian::issueBook(int memberID, int bookID)
 
 void Librarian::returnBook(int memberID, int bookID)
 {
+    // Loop through the members for the target member.
     for (int i = 0; i < (int) members.size(); i++) {
         if (members[i].getMemberID() == std::to_string(memberID)) {
             
+            // Set up variables to hold the books that the member has and wants to return.
             std::vector<Book> memberBooks;
             std::vector<Book> returnedBooks;
 
+            // Loop through member books and allocate the books to their required arrays.
             for (auto& book : members[i].getBooksBorrowed()) {
                 if (book.getBookID() != std::to_string(bookID)) {
                     memberBooks.push_back(book);
@@ -217,13 +220,17 @@ void Librarian::returnBook(int memberID, int bookID)
                 }
             }
 
+            // Provide feedback if the given book ID is not in the member's borrowed books.
             if ((int) returnedBooks.size() == 0) {
                 std::cout << members[i].getName() << " does not have the book with ID " << std::to_string(bookID) << std::endl;
                 std::cout << "Please enter a book ID pertaining to the member." << std::endl;
                 return;
             }
 
+            // Calculate a fine upon return (if returned timeously, no fine is added).
             calcFine(memberID, bookID);
+
+            // Set the member's books again, excluding the returned book.
             members[i].setBooksBorrowed(memberBooks);
             std::cout << "Returned the book with name: " << returnedBooks[0].getBookName() << " (ID: " << std::to_string(bookID) << ")." << std::endl;
             return;
@@ -258,11 +265,12 @@ void Librarian::calcFine(int memberID, int bookID)
                     try {
                         int diff = getDiffInDates(Date(std::stoi(day), std::stoi(month), std::stoi(year)), book.getDueDate());
 
-                        // Issue a fine using the fine amount.
+                        // Issue a fine using the fine amount if needed.
                         if (diff > 0) {
                             int dailyFineAmount = 1;
                             int totalFine = dailyFineAmount * diff;
 
+                            // Print the fine out to the librarian.
                             std::cout << "\nThe books was " << std::to_string(diff) << " days late." << std::endl;
                             std::cout << "The member has to pay a fine amounting to: £" << std::to_string(totalFine) << ".00" << std::endl;
                         }
@@ -270,6 +278,7 @@ void Librarian::calcFine(int memberID, int bookID)
                             std::cout << "\nThe member returned the book within the given period." << std::endl;
                         }
                     }
+                    // Catch any incorrect data types for date.
                     catch (const std::invalid_argument& e) {
                         std::cout << "\nInvalid entries for the date. Please try entering the date again.\n" << std::endl;
                         calcFine(memberID, bookID);
@@ -282,6 +291,7 @@ void Librarian::calcFine(int memberID, int bookID)
 
 void Librarian::displayBorrowedBooks(int memberID)
 {
+    // Loop through members to find the target member.
     for(auto& member : members) {
         if (std::stoi(member.getMemberID()) == memberID) {
             
@@ -290,6 +300,7 @@ void Librarian::displayBorrowedBooks(int memberID)
                 std::cout << "The member's borrowed books are:" << std::endl;
                 int number = 1;
 
+                // Loop through the target member's books and print them out (with a number for display).
                 for (auto& book : member.getBooksBorrowed()) {
                 std::cout << std::to_string(number) << ".) " << "ID: " << book.getBookID() << "    Name: " << book.getBookName() << std::endl;
                 number += 1;
@@ -302,6 +313,7 @@ void Librarian::displayBorrowedBooks(int memberID)
             }
         }
     }
+    // Provide feedback if the given ID is not in the databse.
     std::cout << "The specified member does not exist." << std::endl;
 }
 
