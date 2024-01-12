@@ -92,8 +92,14 @@ void Librarian::addMember()
     std::cin >> memberAddress;
 
     // After getting all the details, push the new member to the members vector.
-    members.push_back(Member(std::stoi(memberID), memberName, memberAddress, memberEmail));
-
+    try {
+        members.push_back(Member(std::stoi(memberID), memberName, memberAddress, memberEmail));
+    }
+    catch (const std::invalid_argument& e) {
+        std::cout << "\nMember ID needs to be an integer. Please try adding a member again.\n" << std::endl;
+        return;
+    }
+    
     // Display the new member, with the details to the librarian.
     std::cout << "\nNew Member Created. Details are as follows:\n\n";
     std::cout << "Member ID:       " << memberID << std::endl;
@@ -181,18 +187,17 @@ void Librarian::returnBook(int memberID, int bookID)
         if (std::stoi(member.getMemberID()) == memberID) {
             
             // Return the book if there is a match and check if a fine needs to be added.
-            auto borrowedBooks = member.getBooksBorrowed();
-            for (auto it = borrowedBooks.begin(); it != borrowedBooks.end(); ++it) {
+            for (auto it = member.getBooksBorrowed().begin(); it != member.getBooksBorrowed().end(); ++it) {
                 if (it->getBookID() == std::to_string(bookID)) {
                     calcFine(std::stoi(member.getMemberID()), std::stoi(it->getBookID()));
                     
                     // Remove the borrowed book from the member's book collection.
+                    member.getBooksBorrowed().erase(it);
                     std::cout << "Successfully returned the book: " << it->getBookName() << std::endl;
-                    borrowedBooks.erase(it);
                     return;
                 }
             }
-            std::cout << "The member " << member.getName() << " does not have the specified book" << std::endl;
+            std::cout << "The member " << member.getName() << " does not have the specified book." << std::endl;
             return;
         }
     }
@@ -255,12 +260,15 @@ void Librarian::displayBorrowedBooks(int memberID)
                 std::cout << std::to_string(number) << ".) " << "ID: " << book.getBookID() << "    Name: " << book.getBookName() << std::endl;
                 number += 1;
                 }
+                return;
             }
             else {
                 std::cout << "The member currently has no borrowed books.";
+                return;
             }
         }
     }
+    std::cout << "The specified member does not exist." << std::endl;
 }
 
 int Librarian::getstaffID()

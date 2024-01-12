@@ -26,5 +26,5 @@ int getDiffInDates(Date oldDate, Date newDate)
 {
     int totalDaysInOldDate = (365 * oldDate.getYear()) + (30 * oldDate.getMonth()) + oldDate.getDay();
     int totalDaysInNewDate = (365 * newDate.getYear()) + (30 * newDate.getMonth()) + newDate.getDay();
-    return totalDaysInNewDate - totalDaysInNewDate;
+    return totalDaysInNewDate - totalDaysInOldDate;
 }
