@@ -80,33 +80,35 @@ void Librarian::addMember()
 
     std::cout << "Member ID: ";
     std::cin >> memberID;
-    std::cout << "\n";
 
     std::cout << "Member Name: ";
     std::cin >> memberName;
-    std::cout << "\n";
 
     std::cout << "Member Email: ";
     std::cin >> memberEmail;
-    std::cout << "\n";
 
     std::cout << "Member Address: ";
     std::cin >> memberAddress;
-    std::cout << "\n";
 
     // After getting all the details, push the new member to the members vector.
     members.push_back(Member(std::stoi(memberID), memberName, memberAddress, memberEmail));
+
+    // Display the new member, with the details to the librarian.
+    std::cout << "\nNew Member Created. Details are as follows:\n\n";
+    std::cout << "Member ID:       " << memberID << std::endl;
+    std::cout << "Member Name:     " << memberName << std::endl;
+    std::cout << "Member Email:    " << memberEmail << std::endl;
+    std::cout << "Member Address:  " << memberAddress << std::endl;
 }
 
-// TODO: Inform the librarian that their member and book ID is valid or invalid.
 void Librarian::issueBook(int memberID, int bookID)
 {
     // Loop through all the members in the members array.
-    for (auto& element : members) {
+    for (auto& member : members) {
 
         // Identify the member that wants to borrow a book using their ID.
         // Note the memberID is converted from a string to int as the getMemberID method has to return a string.
-        if (std::stoi(element.getMemberID()) == memberID) {
+        if (std::stoi(member.getMemberID()) == memberID) {
 
             // Open the file.
             std::ifstream file;
@@ -138,30 +140,32 @@ void Librarian::issueBook(int memberID, int bookID)
 
                     // Ask the librarian to enter the due date for the book.
                     int day, month, year;
-                    std::cout << "Enter the requested information in number form eg. 2023 07 16" << std::endl;
+                    std::cout << "Enter the requested information in number form eg. 2023 07 16:" << std::endl;
+                    std::cout << "\n";
 
                     std::cout << "Enter the year the book has to be returned: ";
                     std::cin >> year;
-                    std::cout << "\n";
 
                     std::cout << "Enter the month the book has to be returned: ";
                     std::cin >> month;
-                    std::cout << "\n";
 
                     std::cout << "Enter the day the book has to be returned: ";
                     std::cin >> day;
-                    std::cout << "\n";
 
                     // Set the due date and add the book to the member's book list.
                     borrowedBook.setDueDate(Date(day, month, year));
-                    element.setBooksBorrowed(Book(std::stoi(bookId), bookName, authorFirst, authorLast));
+                    member.setBooksBorrowed(Book(std::stoi(bookId), bookName, authorFirst, authorLast));
 
-                    // Close the file after successfully getting the book information.
+                    // Inform the librarian the book was issued and close the file.
+                    std::cout << "\nSuccessfully issued the book " << bookName << " (ID: " << bookID << ")." << std::endl;
                     file.close();
+                    return;
                 }
             }
+            std::cout << "Invalid Book ID. Please make sure the book ID entered is correct." << std::endl;
         }
     }
+    std::cout << "Invalid member ID. Please make sure the entered member ID exists." << std::endl;
 }
 
 void Librarian::returnBook(int memberID, int bookID)
@@ -181,13 +185,14 @@ void Librarian::returnBook(int memberID, int bookID)
                     calcFine(std::stoi(member.getMemberID()), std::stoi(userBook.getBookID()));
                     // TODO: Remove the book from member.
                     std::cout << "Successfully returned the book: " << userBook.getBookName() << std::endl;
+                    return;
                 }
             }
+            std::cout << " The member " << member.getName() << " does not have the specified book" << std::endl;
         }
     } 
 }
 
-// Added a parameter to this method to be able to calculate the fine.
 void Librarian::calcFine(int memberID, int bookID)
 {
     // Identify the book in the member's borrowed books.

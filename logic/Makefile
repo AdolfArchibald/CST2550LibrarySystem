@@ -2,7 +2,7 @@ CXX = g++
 CXXFLAGS = -g -Wall -Wextra -Wpedantic
 
 
-# Define object files
+# Object files to be compiled.
 OBJ_PERSON = person.o
 OBJ_DATE = date.o
 OBJ_BOOK = book.o
@@ -28,9 +28,7 @@ $(OBJ_DATE): date.cpp date.h
 $(OBJ_BOOK): book.cpp book.h date.h
 	$(CXX) $(CXXFLAGS) -c -o $@ book.cpp
 
-# main.o: main.cpp person.h date.h book.h
-# 	$(CXX) $(CXXFLAGS) -c -o $@ main.cpp
-
+# Remove all object files and main executable when cleaning.
 clean:
 	rm -f *.o
 	rm $(MAIN_EXECUTABLE)

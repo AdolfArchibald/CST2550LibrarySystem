@@ -9,7 +9,7 @@ int main() {
 
         std::string choice;
 
-        std::cout << "Please select what you want to do:" << std::endl;
+        std::cout << "\nPlease select what you want to do (Enter the number):\n" << std::endl;
         std::cout << "1.) Add a member" << std::endl;
         std::cout << "2.) Issue a book to a member" << std::endl;
         std::cout << "3.) Return a book" << std::endl;
@@ -18,24 +18,23 @@ int main() {
         std::cin >> choice;
 
         if (choice == "1") {
+            std::cout << "\n";
             manager.addMember();
-            std::cout << "\n\n";
+            std::cout << "\n";
         }
 
         else if (choice == "2") {
 
             std::string memberID, bookID;
 
-            std::cout << "Enter the member ID: ";
+            std::cout << "\nEnter the member ID: ";
             std::cin >> memberID;
-            std::cout << "/n";
 
             std::cout << "Enter the book ID: ";
             std::cin >> bookID;
-            std::cout <<"/n";
 
             manager.issueBook(std::stoi(memberID), std::stoi(bookID));
-            std::cout << "\n\n";
+            std::cout << "\n";
         }
 
         else if (choice == "3") {
@@ -44,14 +43,14 @@ int main() {
 
             std::cout << "Enter the member ID: ";
             std::cin >> memberID;
-            std::cout << "/n";
+            std::cout << "\n";
 
             std::cout << "Enter the book ID: ";
             std::cin >> bookID;
-            std::cout <<"/n";
+            std::cout <<"\n";
 
             manager.returnBook(std::stoi(memberID), std::stoi(bookID));
-            std::cout << "\n\n";
+            std::cout << "\n";
         }
 
         else if (choice == "4") {
@@ -60,10 +59,10 @@ int main() {
 
             std::cout << "Enter the member ID: ";
             std::cin >> memberID;
-            std::cout << "/n";
+            std::cout << "\n";
 
             manager.displayBorrowedBooks(std::stoi(memberID));
-            std::cout << "\n\n";
+            std::cout << "\n";
         }
 
         else {
