@@ -7,6 +7,7 @@ Book::Book(int bookID, std::string bookName, std::string authorFirstName, std::s
 {
     this->bookID = bookID;
     this->bookName = bookName;
+    this->borrower = nullptr;
     this->authorFirstName = authorFirstName;
     this->authorLastName = authorLastName;
 }
@@ -43,14 +44,14 @@ void Book::setDueDate(Date dueDate)
 
 void Book::returnBook()
 {
-    this->borrower = Member(0, "", "", "");
+    this->borrower = nullptr;
 }
 
 void Book::borrowBook(Member borrower, Date dueDate)
 {
     // Check if the book is not already borrowed
-    if (this->borrower.getMemberID() == "0") {
-        this->borrower = borrower;
+    if (this->borrower == nullptr) {
+        this->borrower = &borrower;
         this->dueDate = dueDate;
         borrower.setBooksBorrowed(*this);
     } else {

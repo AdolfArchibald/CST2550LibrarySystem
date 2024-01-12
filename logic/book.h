@@ -6,6 +6,8 @@
 #include "person.h"
 #include "date.h"
 
+class Member;
+
 class Book {
 
     private:
@@ -15,7 +17,7 @@ class Book {
         std::string authorLastName;
         std::string bookType;
         Date dueDate{0, 0, 0};
-        Member borrower{0, "", "" , ""};
+        Member* borrower;
     
     public:
         Book(int bookID, std::string bookName, std::string authorFirstName, std::string authorLastName);

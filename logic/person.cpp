@@ -61,7 +61,7 @@ std::vector<Book> Member::getBooksBorrowed()
     return booksLoaned;
 }
 
-void Member::setBooksBorrowed(Book book)
+void Member::setBooksBorrowed(const Book& book)
 {
     booksLoaned.push_back(book);
 }

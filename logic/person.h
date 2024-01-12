@@ -5,6 +5,8 @@
 #include <vector>
 #include "book.h"
 
+class Book;
+
 class Person {
 
     private:
@@ -37,7 +39,7 @@ class Member : public Person {
         std::string getMemberID();
         std::vector<Book> getBooksBorrowed();
 
-        void setBooksBorrowed(Book book);
+        void setBooksBorrowed(const Book& book);
 };
 
 class Librarian : public Person {

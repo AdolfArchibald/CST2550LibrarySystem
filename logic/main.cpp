@@ -1,9 +1,7 @@
-#include "book.h"
-#include "date.h"
-#include "person.cpp"
+#include "person.h"
 #include <iostream>
 
-void main() {
+int main() {
 
     Librarian manager = Librarian(1, "Andrew", "12 Broad Road Meadows Estate", "andrew@thislibrary.com", 500);
 
@@ -67,9 +65,10 @@ void main() {
             manager.displayBorrowedBooks(std::stoi(memberID));
             std::cout << "\n\n";
         }
-        
+
         else {
             std::cout << "Please enter a valid number.\n" << std::endl;
         }
     }
+    return 0;
 }
