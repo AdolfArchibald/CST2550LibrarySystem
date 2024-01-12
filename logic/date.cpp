@@ -24,9 +24,7 @@ int Date::getYear()
 
 int getDiffInDates(Date oldDate, Date newDate)
 {
-    int diffInYears = newDate.getYear() - oldDate.getYear();
-    int diffInMonths = newDate.getMonth() - oldDate.getMonth();
-    int diffInDays = newDate.getDay() - oldDate.getDay();
-
-    return (diffInYears * 365) + (diffInMonths * 30) + diffInDays;
+    int totalDaysInOldDate = (365 * oldDate.getYear()) + (30 * oldDate.getMonth()) + oldDate.getDay();
+    int totalDaysInNewDate = (365 * newDate.getYear()) + (30 * newDate.getMonth()) + newDate.getDay();
+    return totalDaysInNewDate - totalDaysInNewDate;
 }

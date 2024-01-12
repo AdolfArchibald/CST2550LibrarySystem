@@ -41,9 +41,8 @@ int main() {
             
             std::string memberID, bookID;
 
-            std::cout << "Enter the member ID: ";
+            std::cout << "\nEnter the member ID: ";
             std::cin >> memberID;
-            std::cout << "\n";
 
             std::cout << "Enter the book ID: ";
             std::cin >> bookID;
@@ -57,7 +56,7 @@ int main() {
 
             std::string memberID;
 
-            std::cout << "Enter the member ID: ";
+            std::cout << "\nEnter the member ID: ";
             std::cin >> memberID;
             std::cout << "\n";
 

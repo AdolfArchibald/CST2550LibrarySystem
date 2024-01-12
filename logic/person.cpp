@@ -74,6 +74,7 @@ Librarian::Librarian(int staffId, std::string name, std::string address, std::st
 
 void Librarian::addMember()
 {   
+    // Get the details of the member.
     std::string memberID, memberName, memberEmail, memberAddress;
 
     std::cout << "Please enter the member details below:" << std::endl;
@@ -163,9 +164,11 @@ void Librarian::issueBook(int memberID, int bookID)
                 }
             }
             std::cout << "Invalid Book ID. Please make sure the book ID entered is correct." << std::endl;
+            return;
         }
     }
     std::cout << "Invalid member ID. Please make sure the entered member ID exists." << std::endl;
+    return;
 }
 
 void Librarian::returnBook(int memberID, int bookID)
@@ -174,23 +177,26 @@ void Librarian::returnBook(int memberID, int bookID)
     for (auto& member : members) {
 
         // Identify the member that wants to return a book using their ID.
-        // Note the memberID is converted from a string to int as the getMemberID method has to return a string.
+        // Note the memberID is converted from a string to int.
         if (std::stoi(member.getMemberID()) == memberID) {
             
-            // Loop through the user books and look for the matching book ID.
             // Return the book if there is a match and check if a fine needs to be added.
-            // TODO: LEt the librarian know if the book ID isn't borrowed.
-            for (auto& userBook : member.getBooksBorrowed()) {
-                if (userBook.getBookID() == std::to_string(bookID)) {
-                    calcFine(std::stoi(member.getMemberID()), std::stoi(userBook.getBookID()));
-                    // TODO: Remove the book from member.
-                    std::cout << "Successfully returned the book: " << userBook.getBookName() << std::endl;
+            auto borrowedBooks = member.getBooksBorrowed();
+            for (auto it = borrowedBooks.begin(); it != borrowedBooks.end(); ++it) {
+                if (it->getBookID() == std::to_string(bookID)) {
+                    calcFine(std::stoi(member.getMemberID()), std::stoi(it->getBookID()));
+                    
+                    // Remove the borrowed book from the member's book collection.
+                    std::cout << "Successfully returned the book: " << it->getBookName() << std::endl;
+                    borrowedBooks.erase(it);
                     return;
                 }
             }
-            std::cout << " The member " << member.getName() << " does not have the specified book" << std::endl;
+            std::cout << "The member " << member.getName() << " does not have the specified book" << std::endl;
+            return;
         }
-    } 
+    }
+    std::cout << "The ID entered does not have an associated member. Please make sure the ID is correct." << std::endl;
 }
 
 void Librarian::calcFine(int memberID, int bookID)
@@ -208,19 +214,16 @@ void Librarian::calcFine(int memberID, int bookID)
 
                     std::cout << "Enter the current year: ";
                     std::cin >> year;
-                    std::cout << "\n";
 
                     std::cout << "Enter the current month: ";
                     std::cin >> month;
-                    std::cout << "\n";
 
                     std::cout << "Enter the current day: ";
                     std::cin >> day;
-                    std::cout << "\n";
                     
                     int diff = getDiffInDates(Date(day, month, year), book.getDueDate());
 
-                    // Issue a fine using the fine aount 
+                    // Issue a fine using the fine amount.
                     if (diff < 0) {
                         diff *= -1;
                         int dailyFineAmount = 1;
@@ -242,12 +245,19 @@ void Librarian::displayBorrowedBooks(int memberID)
 {
     for(auto& member : members) {
         if (std::stoi(member.getMemberID()) == memberID) {
-            std::cout << "The member's borrowed books are:" << std::endl;
-            int number = 1;
+            
+            // Display the member's books (if there are any).
+            if (member.getBooksBorrowed().size() > 0) {
+                std::cout << "The member's borrowed books are:" << std::endl;
+                int number = 1;
 
-            for (auto& book : member.getBooksBorrowed()) {
+                for (auto& book : member.getBooksBorrowed()) {
                 std::cout << std::to_string(number) << ".) " << "ID: " << book.getBookID() << "    Name: " << book.getBookName() << std::endl;
                 number += 1;
+                }
+            }
+            else {
+                std::cout << "The member currently has no borrowed books.";
             }
         }
     }
