@@ -145,8 +145,17 @@ void Librarian::issueBook(int memberID, int bookID)
                     // Instantiate the book using the information.
                     Book borrowedBook = Book(std::stoi(bookId), bookName, authorFirst, authorLast);
 
+                    for (auto& memberNew : members) {
+                        for (auto& bookNew : memberNew.getBooksBorrowed()) {
+                            if (bookNew.getBookID() == borrowedBook.getBookID()) {
+                                std::cout << "The book is already borrowed. Please come back later." << std::endl;
+                                return;
+                            }
+                        }
+                    }
+
                     // Ask the librarian to enter the due date for the book.
-                    int day, month, year;
+                    std::string day, month, year;
                     std::cout << "Enter the requested information in number form eg. 2023 07 16:" << std::endl;
                     std::cout << "\n";
 
@@ -160,16 +169,27 @@ void Librarian::issueBook(int memberID, int bookID)
                     std::cin >> day;
 
                     // Set the due date and add the book to the member's book list.
-                    borrowedBook.setDueDate(Date(day, month, year));
+                    try {
+                        int intDay, intMonth, intYear;
+                        intDay = std::stoi(day);
+                        intMonth = std::stoi(month);
+                        intYear = std::stoi(year);
 
-                    std::vector<Book> memberBooks = member.getBooksBorrowed();
-                    memberBooks.push_back(Book(std::stoi(bookId), bookName, authorFirst, authorLast));
-                    member.setBooksBorrowed(memberBooks);
+                        borrowedBook.setDueDate(Date(intDay, intMonth, intYear));
 
-                    // Inform the librarian the book was issued and close the file.
-                    std::cout << "\nSuccessfully issued the book " << bookName << " (ID: " << bookID << ")." << std::endl;
-                    file.close();
-                    return;
+                        std::vector<Book> memberBooks = member.getBooksBorrowed();
+                        memberBooks.push_back(borrowedBook);
+                        member.setBooksBorrowed(memberBooks);
+
+                        // Inform the librarian the book was issued and close the file.
+                        std::cout << "\nSuccessfully issued the book " << bookName << " (ID: " << bookID << ")." << std::endl;
+                        file.close();
+                        return;
+                    }
+                    catch (const std::invalid_argument& e) {
+                        std::cout << "Invalid entries for the date. Please retry." << std::endl;
+                        return;
+                    }
                 }
             }
             std::cout << "Invalid Book ID. Please make sure the book ID entered is correct." << std::endl;
@@ -205,7 +225,7 @@ void Librarian::returnBook(int memberID, int bookID)
 
             calcFine(memberID, bookID);
             members[i].setBooksBorrowed(memberBooks);
-            std::cout << "\nReturned the book with name: " << returnedBooks[0].getBookName() << "(ID: " << std::to_string(bookID) << ")." << std::endl;
+            std::cout << "Returned the book with name: " << returnedBooks[0].getBookName() << " (ID: " << std::to_string(bookID) << ")." << std::endl;
             return;
         }
     }
@@ -239,7 +259,7 @@ void Librarian::calcFine(int memberID, int bookID)
                         int diff = getDiffInDates(Date(std::stoi(day), std::stoi(month), std::stoi(year)), book.getDueDate());
 
                         // Issue a fine using the fine amount.
-                        if (diff > 3) {
+                        if (diff > 0) {
                             int dailyFineAmount = 1;
                             int totalFine = dailyFineAmount * diff;
 
@@ -247,12 +267,12 @@ void Librarian::calcFine(int memberID, int bookID)
                             std::cout << "The member has to pay a fine amounting to: £" << std::to_string(totalFine) << ".00" << std::endl;
                         }
                         else {
-                            std::cout << "The member returned the book within the given period." << std::endl;
+                            std::cout << "\nThe member returned the book within the given period." << std::endl;
                         }
                     }
                     catch (const std::invalid_argument& e) {
-                        std::cout << "\nDate entries need to be integers. Please try returning the book again.\n" << std::endl;
-                        return;
+                        std::cout << "\nInvalid entries for the date. Please try entering the date again.\n" << std::endl;
+                        calcFine(memberID, bookID);
                     }
                 }
             }

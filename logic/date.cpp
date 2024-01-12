@@ -38,7 +38,10 @@ int getDiffInDates(Date date1, Date date2)
     for (int month = 0; month < date2.getMonth(); month++) {
         totalDays2 += daysInMonth[month];
     }
-
-    // Calculate the absolute difference in days
-    return std::abs(totalDays2 - totalDays1);
+    
+     // Calculate the absolute difference in days
+    if (totalDays2 - totalDays1 <= 0) {
+        return std::abs(totalDays2 - totalDays1);
+    }
+    return 0;
 }
