@@ -56,11 +56,14 @@ void Book::borrowBook(Member& borrower, Date dueDate)
         
         // Add the book to the user's books.
         std::vector<Book> memberBooks = borrower.getBooksBorrowed();
+        this->setDueDate(dueDate);
         memberBooks.push_back(*this);
 
         borrower.setBooksBorrowed(memberBooks);
+        std::cout << "\nSuccessfully issued the book " << bookName << " (ID: " << bookID << ")." << std::endl;
 
-    } else {
+    } 
+    else {
         // Let the user know that the book is not currently available
         std::cout << "The book is not available as someone else currently has it.";
     }
