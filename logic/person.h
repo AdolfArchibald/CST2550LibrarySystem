@@ -63,6 +63,9 @@ class Librarian : public Person {
 
         void setStaffID(int staffID);
         void setSalary(int salary);
+
+        // Testing only (Not used anywhere other than testing). Remove after testing.. 
+        std::vector<Member> getMembers();
 };
 
 #endif

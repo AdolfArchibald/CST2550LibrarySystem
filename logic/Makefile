@@ -7,10 +7,18 @@ OBJ_PERSON = person.o
 OBJ_DATE = date.o
 OBJ_BOOK = book.o
 
-# Main executable
-MAIN_EXECUTABLE = librarySystem
+OBJ_PERSON_TEST = personTest.o
+OBJ_DATE_TEST = dateTest.o
+OBJ_BOOK_TEST = bookTest.o
 
-.PHONY: all clean
+# Main executable and test executable.
+MAIN_EXECUTABLE = librarySystem
+TEST_EXECUTABLE = testLibrarySystem
+
+LOGIC_FOLDER = ../logic
+TESTING_FOLDER = ../testing
+
+.PHONY: all clean test
 
 all: $(MAIN_EXECUTABLE)
 
@@ -28,7 +36,24 @@ $(OBJ_DATE): date.cpp date.h
 $(OBJ_BOOK): book.cpp book.h date.h
 	$(CXX) $(CXXFLAGS) -c -o $@ book.cpp
 
-# Remove all object files and main executable when cleaning.
+# Remove all object files and executables when cleaning.
 clean:
 	rm -f *.o
 	rm $(MAIN_EXECUTABLE)
+	rm $(TEST_EXECUTABLE)
+
+# Compile the test executable when testing.
+test: $(TEST_EXECUTABLE)
+
+$(TEST_EXECUTABLE): $(TESTING_FOLDER)/systemTests.cpp $(OBJ_PERSON_TEST) $(OBJ_DATE_TEST) $(OBJ_BOOK_TEST)
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+# Compile object files
+$(OBJ_PERSON_TEST): $(TESTING_FOLDER)/testingPerson.cpp $(LOGIC_FOLDER)/person.h $(LOGIC_FOLDER)/date.h $(LOGIC_FOLDER)/book.h
+	$(CXX) $(CXXFLAGS) -c -o $@ $(TESTING_FOLDER)/testingPerson.cpp
+
+$(OBJ_DATE_TEST): $(TESTING_FOLDER)/testingDate.cpp $(LOGIC_FOLDER)/date.h
+	$(CXX) $(CXXFLAGS) -c -o $@ $(TESTING_FOLDER)/testingDate.cpp
+
+$(OBJ_BOOK_TEST): $(TESTING_FOLDER)/testingBook.cpp $(LOGIC_FOLDER)/book.h $(LOGIC_FOLDER)/date.h
+	$(CXX) $(CXXFLAGS) -c -o $@ $(TESTING_FOLDER)/testingBook.cpp
