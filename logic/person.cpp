@@ -91,10 +91,17 @@ void Librarian::addMember()
     std::cout << "Member Address: ";
     std::cin >> memberAddress;
 
-    // After getting all the details, push the new member to the members vector.
     try {
+        // Loop through all members and make sure the given ID is unique.
+        for (auto& member : members) {
+            if (member.getMemberID() == memberID) {
+                std::cout << "Member ID is already taken and must be unique. Please retry." << std::endl;
+                return;
+            }
+        }
         members.push_back(Member(std::stoi(memberID), memberName, memberAddress, memberEmail));
     }
+    // Make sure the ID is an integer.
     catch (const std::invalid_argument& e) {
         std::cout << "\nMember ID needs to be an integer. Please try adding a member again.\n" << std::endl;
         return;
