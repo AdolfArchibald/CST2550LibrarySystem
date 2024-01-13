@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <filesystem>
 #include "person.h"
 #include "date.h"
 
@@ -124,83 +125,101 @@ void Librarian::issueBook(int memberID, int bookID)
         // Note the memberID is converted from a string to int as the getMemberID method has to return a string.
         if (std::stoi(member.getMemberID()) == memberID) {
 
-            // Open the file.
-            std::ifstream file;
-            file.open("library_books.csv");
+            // Find and open the file.
+            std::string directoryPath = "../logic";
+            std::string targetFile;
 
-            // Variables to store the values from each line.
-            std::string line;
-            std::string bookId, bookName, pageCount, authorFirst, authorLast, bookType;
-            
-            // Looping through all the lines until the desired book ID is reached.
-            while (std::getline(file, line)) {
-
-                // Split the line into values using stringstream and grab the book ID for identification.
-                std::istringstream ss(line);
-                std::getline(ss, bookId, ',');
-
-                // If the book ID gets a match, add the book object to the member's list.
-                if (bookId == std::to_string(bookID)) {
-                    
-                    // Get all the book information for the correct book.
-                    std::getline(ss, bookName, ',');
-                    std::getline(ss, pageCount, ',');
-                    std::getline(ss, authorFirst, ',');
-                    std::getline(ss, authorLast, ',');
-                    std::getline(ss, bookType, ',');
-                    
-                    // Instantiate the book using the information.
-                    Book borrowedBook = Book(std::stoi(bookId), bookName, authorFirst, authorLast);
-
-                    for (auto& memberNew : members) {
-                        for (auto& bookNew : memberNew.getBooksBorrowed()) {
-                            if (bookNew.getBookID() == borrowedBook.getBookID()) {
-                                std::cout << "The book is already borrowed. Please come back later." << std::endl;
-                                return;
-                            }
-                        }
-                    }
-
-                    // Ask the librarian to enter the due date for the book.
-                    std::string day, month, year;
-                    std::cout << "Enter the requested information in number form eg. 2023 07 16:" << std::endl;
-                    std::cout << "\n";
-
-                    std::cout << "Enter the year the book has to be returned: ";
-                    std::cin >> year;
-
-                    std::cout << "Enter the month the book has to be returned: ";
-                    std::cin >> month;
-
-                    std::cout << "Enter the day the book has to be returned: ";
-                    std::cin >> day;
-
-                    // Set the due date and add the book to the member's book list.
-                    try {
-                        int intDay, intMonth, intYear;
-                        intDay = std::stoi(day);
-                        intMonth = std::stoi(month);
-                        intYear = std::stoi(year);
-
-                        borrowedBook.setDueDate(Date(intDay, intMonth, intYear));
-
-                        std::vector<Book> memberBooks = member.getBooksBorrowed();
-                        memberBooks.push_back(borrowedBook);
-                        member.setBooksBorrowed(memberBooks);
-
-                        // Inform the librarian the book was issued and close the file.
-                        std::cout << "\nSuccessfully issued the book " << bookName << " (ID: " << bookID << ")." << std::endl;
-                        file.close();
-                        return;
-                    }
-                    catch (const std::invalid_argument& e) {
-                        std::cout << "Invalid entries for the date. Please retry." << std::endl;
-                        return;
-                    }
+            for (auto& entry : std::filesystem::directory_iterator(directoryPath)) {
+                if (entry.is_regular_file() && entry.path().extension() == ".csv") {
+                    targetFile = entry.path().filename().string();
+                    break;
                 }
             }
-            std::cout << "Invalid Book ID. Please make sure the book ID entered is correct." << std::endl;
-            return;
+
+            if (!targetFile.empty()) {
+                
+                std::ifstream file;
+                file.open(targetFile);
+
+                // Variables to store the values from each line.
+                std::string line;
+                std::string bookId, bookName, pageCount, authorFirst, authorLast, bookType;
+                
+                // Looping through all the lines until the desired book ID is reached.
+                while (std::getline(file, line)) {
+
+                    // Split the line into values using stringstream and grab the book ID for identification.
+                    std::istringstream ss(line);
+                    std::getline(ss, bookId, ',');
+
+                    // If the book ID gets a match, add the book object to the member's list.
+                    if (bookId == std::to_string(bookID)) {
+                        
+                        // Get all the book information for the correct book.
+                        std::getline(ss, bookName, ',');
+                        std::getline(ss, pageCount, ',');
+                        std::getline(ss, authorFirst, ',');
+                        std::getline(ss, authorLast, ',');
+                        std::getline(ss, bookType, ',');
+                        
+                        // Instantiate the book using the information.
+                        Book borrowedBook = Book(std::stoi(bookId), bookName, authorFirst, authorLast);
+
+                        for (auto& memberNew : members) {
+                            for (auto& bookNew : memberNew.getBooksBorrowed()) {
+                                if (bookNew.getBookID() == borrowedBook.getBookID()) {
+                                    std::cout << "The book is already borrowed. Please come back later." << std::endl;
+                                    return;
+                                }
+                            }
+                        }
+
+                        // Ask the librarian to enter the due date for the book.
+                        std::string day, month, year;
+                        std::cout << "Enter the requested information in number form eg. 2023 07 16:" << std::endl;
+                        std::cout << "\n";
+
+                        std::cout << "Enter the year the book has to be returned: ";
+                        std::cin >> year;
+
+                        std::cout << "Enter the month the book has to be returned: ";
+                        std::cin >> month;
+
+                        std::cout << "Enter the day the book has to be returned: ";
+                        std::cin >> day;
+
+                        // Set the due date and add the book to the member's book list.
+                        try {
+                            int intDay, intMonth, intYear;
+                            intDay = std::stoi(day);
+                            intMonth = std::stoi(month);
+                            intYear = std::stoi(year);
+
+                            borrowedBook.setDueDate(Date(intDay, intMonth, intYear));
+
+                            std::vector<Book> memberBooks = member.getBooksBorrowed();
+                            memberBooks.push_back(borrowedBook);
+                            member.setBooksBorrowed(memberBooks);
+
+                            // Inform the librarian the book was issued and close the file.
+                            std::cout << "\nSuccessfully issued the book " << bookName << " (ID: " << bookID << ")." << std::endl;
+                            file.close();
+                            return;
+                        }
+                        catch (const std::invalid_argument& e) {
+                            std::cout << "Invalid entries for the date. Please retry." << std::endl;
+                            file.close();
+                            return;
+                        }
+                    }
+                }
+                std::cout << "Invalid Book ID. Please make sure the book ID entered is correct." << std::endl;
+                file.close();
+                return;
+            }
+            else {
+                std::cout << "Cannot find a csv file." << std::endl;
+            }
         }
     }
     std::cout << "Invalid member ID. Please make sure the entered member ID exists." << std::endl;
