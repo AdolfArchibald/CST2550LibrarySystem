@@ -85,7 +85,7 @@ TEST_CASE("Book Management", "[librarian]") {
         std::cout << "Correct output. Proceeding." << std::endl;
     }
     
-    SECTION("Retruning Books") {
+    SECTION("Returning Books") {
         std::cout << "\nEnter the data ACCURATELY for this test. Make careful note of instructions." << std::endl;
         std::cout << "Enter the numbers 10 10 10 when dates are requested.\n" << std::endl;
 
@@ -123,6 +123,8 @@ TEST_CASE("Book Management", "[librarian]") {
 
         Librarian manager = Librarian(10, "Jack", "Narrow Street 7", "jack@librarymail.com", 5000);
         manager.addMember();
+        REQUIRE((int) manager.getMembers().size() == 0);
+
         std::cout << "Correct Output. Proceeding." << std::endl;
 
         std::cout << "\nEnter the data ACCURATELY for further testing." << std::endl;
