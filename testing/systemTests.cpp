@@ -4,7 +4,6 @@
 #include <iostream>
 
 TEST_CASE("Testing Getters and Setters", "[person]") {
-    std::cout << "TESTING\n" << std::endl;
 
     Librarian manager = Librarian(10, "Jack", "Narrow Street 7", "jack@librarymail.com", 5000);
     Member member1 = Member(10, "James", "Home Street", "james@mail.com");
@@ -58,7 +57,7 @@ TEST_CASE("Testing Getters and Setters", "[person]") {
 TEST_CASE("Book Management", "[librarian]") {
 
     SECTION("Borrowing Books") {
-        std::cout << "Enter the data accurately for this test. Make careful note of instructions." << std::endl;
+        std::cout << "Enter the data ACCURATELY for this test. Make careful note of instructions." << std::endl;
         std::cout << "Enter the numbers 10 10 10 when dates are requested.\n" << std::endl;
 
         Librarian manager = Librarian(10, "Jack", "Narrow Street 7", "jack@librarymail.com", 5000);
@@ -87,12 +86,12 @@ TEST_CASE("Book Management", "[librarian]") {
     }
     
     SECTION("Retruning Books") {
-        std::cout << "\nEnter the data accurately for this test. Make careful note of instructions." << std::endl;
+        std::cout << "\nEnter the data ACCURATELY for this test. Make careful note of instructions." << std::endl;
         std::cout << "Enter the numbers 10 10 10 when dates are requested.\n" << std::endl;
 
         Librarian manager = Librarian(10, "Jack", "Narrow Street 7", "jack@librarymail.com", 5000);
 
-        std::cout << "Enter new member details for testing borrowing" << std::endl;
+        std::cout << "Enter a new member's details for testing borrowing (new member ID)." << std::endl;
         manager.addMember();
 
         // Issue an actual book to the member.
@@ -117,5 +116,26 @@ TEST_CASE("Book Management", "[librarian]") {
 
         int diff4 = getDiffInDates(Date(22, 10, 2011), Date(20, 10, 2010));
         REQUIRE(diff4 == 367);
+    }
+
+    SECTION("Error Handling", "[Othererrors]") {
+        std::cout << "\nEnter the data INACCURATELY (eg. a string for member ID) for this test. Make careful note of further instructions." << std::endl;
+
+        Librarian manager = Librarian(10, "Jack", "Narrow Street 7", "jack@librarymail.com", 5000);
+        manager.addMember();
+        std::cout << "Correct Output. Proceeding." << std::endl;
+
+        std::cout << "\nEnter the data ACCURATELY for further testing." << std::endl;
+        std::cout <<"Make careful note of further instructions." << std::endl;
+        std::cout << "Ensure this member has ID: 10\n" << std::endl;
+
+        manager.addMember();
+        manager.issueBook(15, 20);
+
+        REQUIRE((int) manager.getMembers().size() == 1);
+        REQUIRE((int) manager.getMembers()[0].getBooksBorrowed().size() == 0);
+
+        std::cout << "\nCorrect Output." << std::endl;
+        std::cout << "All tests passed." << std::endl;
     }
 }
